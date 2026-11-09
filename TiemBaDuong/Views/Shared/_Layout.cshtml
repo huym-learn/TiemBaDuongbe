@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tiệm Bá Đường</title>
+    <link rel="stylesheet" href="~/Content/Site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="@Url.Action("Index", "Home")"><h1>Tiệm Bá Đường</h1></a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                <li><a href="@Url.Action("Search", "Home")">Sản phẩm</a></li>
+                <li><a href="#">Liên hệ</a></li>
+            </ul>
+        </nav>
+        <div class="cart">
+            using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { style = "display:inline" }))
+        </div>
+    </header>
+
+    <main role="main">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success" style="max-width:1200px;margin:16px auto;padding:12px;background:#e8f7ec;border:1px solid #9ad6a8;">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error" style="max-width:1200px;margin:16px auto;padding:12px;background:#fdecec;border:1px solid #e5a0a0;">@TempData["Error"]</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer style="background-color: #333; color: white; padding: 20px; text-align: center; margin-top: 40px;">
+        <h3>Cửa Hàng Nhạc Cụ Tiệm Bá Đường</h3>
+        <p>Địa chỉ: 43/21 Bình Tây, phường Bình Tiên, TPHCM</p>
+        <p>Số điện thoại liên hệ: 0325406579</p>
+    </footer>
+
+    <script>
+        function toggleAudio(audioId, btnElement) {
+            var audio = document.getElementById(audioId);
+            if (audio.paused) {
+                var allAudios = document.getElementsByTagName('audio');
+                var allBtns = document.querySelectorAll('.btn-play');
+                for (var i = 0; i < allAudios.length; i++) {
+                    allAudios[i].pause();
+                    allAudios[i].currentTime = 0;
+                }
+                allBtns.forEach(function (btn) {
+                    btn.innerHTML = '<i class="fas fa-play"></i> <span>Nghe thử</span>';
+                });
+                var playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(function () {
+                        btnElement.innerHTML = '<i class="fas fa-pause"></i> <span>Đang phát...</span>';
+                    }).catch(function (error) {
+                        alert("Trình duyệt đang chặn âm thanh. Vui lòng kiểm tra lại loa!");
+                        console.log(error);
+                    });
+                }
+            } else {
+                audio.pause();
+                btnElement.innerHTML = '<i class="fas fa-play"></i> <span>Nghe thử</span>';
+            }
+        }
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

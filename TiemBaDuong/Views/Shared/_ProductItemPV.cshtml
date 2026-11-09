@@ -1,0 +1,26 @@
+@model TiemBaDuong.Models.ProductCardVM
+@{
+    string prefix = ViewData["prefix"] as string ?? "p";
+    string audioId = prefix + "-audio-" + Model.ProductID;
+    string detailUrl = Url.Action("ProductDetail", "Home", new { id = Model.ProductID });
+}
+<div class="product-item">
+    <a href="@detailUrl"><img src="@Model.ProductImage" alt="@Model.ProductName" /></a>
+    <h3><a href="@detailUrl">@Model.ProductName</a></h3>
+    <p class="price">@Model.ProductPrice.ToString("N0") VNĐ</p>
+    <p style="font-size:13px;color:#666;">Đã bán: @Model.Sold</p>
+    @if (!string.IsNullOrEmpty(Model.AudioDemoUrl))
+    {
+        <button class="btn-play" type="button" onclick="toggleAudio('@audioId', this)">
+            <i class="fas fa-play"></i> <span>Nghe thử</span>
+        </button>
+        <audio id="@audioId" src="@Model.AudioDemoUrl" preload="none"></audio>
+    }
+    @using (Html.BeginForm("AddItem", "Cart", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="productId" value="@Model.ProductID" />
+        <input type="hidden" name="quantity" value="1" />
+        <button type="submit" class="btn">Thêm vào giỏ</button>
+    }
+</div>

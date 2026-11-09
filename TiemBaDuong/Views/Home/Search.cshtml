@@ -1,0 +1,43 @@
+@model TiemBaDuong.Models.ProductSearchVM
+@{
+    ViewBag.Title = "Tìm kiếm sản phẩm";
+}
+<div class="container" style="max-width: 1200px; margin: auto; padding: 20px;">
+    <h2>Tìm kiếm sản phẩm</h2>
+
+    @Html.ValidationSummary(true)
+
+    @using (Html.BeginForm("Search", "Home", FormMethod.Get))
+    {
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end;">
+            <label>Từ khóa<br /><input type="text" name="searchTerm" value="@Model.SearchTerm" /></label>
+            <label>Giá từ<br /><input type="number" name="minPrice" min="0" step="1000" value="@Model.MinPrice" /></label>
+            <label>Đến<br /><input type="number" name="maxPrice" min="0" step="1000" value="@Model.MaxPrice" /></label>
+            <label>Sắp xếp<br />
+                <select name="sortOrder">
+                    <option value="" @(string.IsNullOrEmpty(Model.SortOrder) ? "selected" : "")>Mới nhất</option>
+                    <option value="name_asc" @(Model.SortOrder == "name_asc" ? "selected" : "")>Tên A → Z</option>
+                    <option value="name_desc" @(Model.SortOrder == "name_desc" ? "selected" : "")>Tên Z → A</option>
+                    <option value="price_asc" @(Model.SortOrder == "price_asc" ? "selected" : "")>Giá tăng dần</option>
+                    <option value="price_desc" @(Model.SortOrder == "price_desc" ? "selected" : "")>Giá giảm dần</option>
+                </select>
+            </label>
+            <button type="submit">Lọc</button>
+        </div>
+    }
+
+    @if (Model.Products == null || Model.Products.TotalCount == 0)
+    {
+        <p style="margin-top:20px;">Không tìm thấy sản phẩm phù hợp.</p>
+    }
+    else
+    {
+        <div class="product-container" style="margin-top:20px;">
+            @foreach (var item in Model.Products.Items)
+            {
+                @Html.Partial("_ProductItemPV", item, new ViewDataDictionary { { "prefix", "srch" } })
+            }
+        </div>
+        @Html.Partial("_PagerPV", Model.Pager)
+    }
+</div>

@@ -1,0 +1,77 @@
+@model TiemBaDuong.Models.ProductDetailVM
+@{
+    var p = Model.Product;
+    ViewBag.Title = p.ProductName;
+    string unit = p.ProductPrice.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+}
+<div class="container" style="max-width: 1200px; margin: auto; padding: 20px;">
+    <section class="product-detail" style="display:flex;gap:24px;flex-wrap:wrap;">
+        <img src="@p.ProductImage" alt="@p.ProductName" style="max-width:360px;width:100%;" />
+        <div style="flex:1;min-width:260px;">
+            <h2>@p.ProductName</h2>
+            <p>Danh mục: <a href="@Url.Action("ProductList", "Home", new { categoryId = p.CategoryID })">@p.CategoryName</a></p>
+            <p class="price" data-unit-price="@unit">@p.ProductPrice.ToString("N0") VNĐ</p>
+            <p>Đã bán: @p.Sold</p>
+            <p>@p.ProductDecription</p>
+
+            @if (!string.IsNullOrEmpty(p.AudioDemoUrl))
+            {
+                <button class="btn-play" type="button" onclick="toggleAudio('detail-audio', this)">
+                    <i class="fas fa-play"></i> <span>Nghe thử</span>
+                </button>
+                <audio id="detail-audio" src="@p.AudioDemoUrl" preload="none"></audio>
+            }
+
+            @using (Html.BeginForm("AddItem", "Cart", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="productId" value="@p.ProductID" />
+                <label>Số lượng
+                    <input type="number" id="qty" name="quantity" min="1" max="99" value="1" />
+                </label>
+                <p>Tạm tính: <span id="subtotal">@p.ProductPrice.ToString("N0")</span> VNĐ</p>
+                <button type="submit" class="btn">Thêm vào giỏ</button>
+            }
+        </div>
+    </section>
+
+    <section style="margin-top:40px;">
+        <h2>Sản phẩm cùng danh mục</h2>
+        <div class="product-container">
+            @foreach (var item in Model.RelatedProducts)
+            {
+                @Html.Partial("_ProductItemPV", item, new ViewDataDictionary { { "prefix", "rel" } })
+            }
+        </div>
+    </section>
+
+    <section style="margin-top:40px;">
+        <h2>Bán chạy trong danh mục</h2>
+        <div class="product-container">
+            @foreach (var item in Model.TopDeals.Items)
+            {
+                @Html.Partial("_ProductItemPV", item, new ViewDataDictionary { { "prefix", "top" } })
+            }
+        </div>
+        @Html.Partial("_PagerPV", Model.TopDealsPager)
+    </section>
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            var qty = document.getElementById('qty');
+            var out = document.getElementById('subtotal');
+            var priceEl = document.querySelector('[data-unit-price]');
+            if (!qty || !out || !priceEl) return;
+            var price = Number(priceEl.getAttribute('data-unit-price'));
+            function update() {
+                var q = parseInt(qty.value, 10);
+                if (isNaN(q) || q < 1) q = 1;
+                out.textContent = (price * q).toLocaleString('vi-VN');
+            }
+            qty.addEventListener('input', update);
+            update();
+        })();
+    </script>
+}

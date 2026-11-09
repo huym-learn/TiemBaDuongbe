@@ -1,0 +1,82 @@
+@model TiemBaDuong.Models.CartIndexVM
+@{ ViewBag.Title = "Giỏ hàng"; }
+<div class="container" style="max-width:1200px;margin:auto;padding:20px;">
+    <h2>Giỏ hàng</h2>
+
+    @if (Model.Messages != null)
+    {
+        foreach (var msg in Model.Messages)
+        {
+            <p class="warning" style="color:#b45309;">@msg</p>
+        }
+    }
+
+    @if (Model.Items.Count == 0)
+    {
+        <p>Giỏ hàng trống. <a href="@Url.Action("Index", "Home")">Tiếp tục mua sắm</a></p>
+    }
+    else
+    {
+        <!-- Form chọn sản phẩm mua: rỗng, các checkbox và nút lưu gắn vào form này qua thuộc tính form -->
+        <form id="selection-form" method="post" action="@Url.Action("SaveSelection", "Cart")">
+            @Html.AntiForgeryToken()
+        </form>
+
+        foreach (var group in Model.Items.GroupBy(i => i.CategoryName))
+        {
+            <h3 style="margin-top:24px;">@group.Key</h3>
+            foreach (var item in group)
+            {
+                <div class="cart-row" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #eee;padding:10px 0;">
+                    <input type="checkbox" form="selection-form" name="selectedIds" value="@item.ProductID" @(item.Selected ? "checked" : "") />
+                    <img src="@item.ProductImage" alt="@item.ProductName" style="width:80px;height:80px;object-fit:cover;" />
+                    <div style="flex:1;min-width:200px;">
+                        <strong>@item.ProductName</strong>
+                        <div>Đơn giá: @item.UnitPrice.ToString("N0") VNĐ</div>
+                        <div>Thành tiền: @item.Subtotal.ToString("N0") VNĐ</div>
+                    </div>
+
+                    @using (Html.BeginForm("UpdateQuantity", "Cart", FormMethod.Post, new { style = "display:inline-flex;gap:6px;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productId" value="@item.ProductID" />
+                        <input type="number" name="quantity" min="1" max="99" value="@item.Quantity" style="width:70px;" />
+                        <button type="submit">Cập nhật</button>
+                    }
+
+                    @using (Html.BeginForm("RemoveItem", "Cart", FormMethod.Post, new { style = "display:inline;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productId" value="@item.ProductID" />
+                        <button type="submit" class="link-button">Xóa</button>
+                    }
+                </div>
+            }
+        }
+
+        <div style="margin-top:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <button type="submit" form="selection-form">Cập nhật lựa chọn</button>
+            <span>Đã chọn @Model.SelectedCount sản phẩm. Tạm tính: <strong>@Model.SelectedTotal.ToString("N0") VNĐ</strong></span>
+            <a class="btn" href="@Url.Action("Checkout", "Order")">Đặt hàng</a>
+        </div>
+
+        @using (Html.BeginForm("ClearCart", "Cart", FormMethod.Post, new { style = "margin-top:12px;" }))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="link-button">Xóa toàn bộ giỏ hàng</button>
+        }
+    }
+
+    @if (Model.SimilarProducts != null && Model.SimilarProducts.Count > 0)
+    {
+        <section style="margin-top:40px;">
+            <h2>Sản phẩm tương tự</h2>
+            <div class="product-container">
+                @foreach (var item in Model.SimilarProducts)
+                {
+                    @Html.Partial("_ProductItemPV", item, new ViewDataDictionary { { "prefix", "sim" } })
+                }
+            </div>
+        </section>
+    }
+</div>

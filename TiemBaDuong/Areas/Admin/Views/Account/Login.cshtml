@@ -1,0 +1,36 @@
+@model TiemBaDuong.Models.AdminLoginVM
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập quản trị</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f8; display: flex; min-height: 100vh; align-items: center; justify-content: center; margin: 0; }
+        .box { background: #fff; padding: 28px; border-radius: 8px; width: 340px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+        .box input { width: 100%; padding: 8px; margin: 4px 0 12px; box-sizing: border-box; }
+        .box button { width: 100%; padding: 10px; background: #1f2937; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        .err { color: #b91c1c; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Đăng nhập quản trị</h2>
+        @using (Html.BeginForm("Login", "Account", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(false, "", new { @class = "err" })
+            <label>Tên đăng nhập</label>
+            @Html.TextBoxFor(m => m.Username)
+            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "err" })
+            <label>Mật khẩu</label>
+            @Html.PasswordFor(m => m.Password)
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "err" })
+            <button type="submit">Đăng nhập</button>
+        }
+    </div>
+</body>
+</html>

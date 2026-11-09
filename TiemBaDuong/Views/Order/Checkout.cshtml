@@ -1,0 +1,64 @@
+@model TiemBaDuong.Models.CheckoutVM
+@{ ViewBag.Title = "Đặt hàng"; }
+<div class="container" style="max-width:900px;margin:auto;padding:20px;">
+    <h2>Thanh toán</h2>
+
+    @using (Html.BeginForm("Checkout", "Order", FormMethod.Post, new { id = "checkout-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.CheckoutToken)
+        @Html.ValidationSummary(true)
+
+        <h3>Địa chỉ giao hàng</h3>
+        <div>
+            <input type="text" id="defaultAddress" value="@Model.DefaultAddress" readonly style="width:70%;" />
+            <button type="button" id="edit-address">Chỉnh sửa</button>
+        </div>
+        <div id="newShippingAddressBox" style="display:none;margin-top:8px;">
+            <textarea name="NewShippingAddress" id="newShippingAddress" rows="3" style="width:70%;" placeholder="Nhập địa chỉ giao hàng mới"></textarea>
+            @Html.ValidationMessageFor(m => m.NewShippingAddress)
+        </div>
+
+        <h3>Phương thức giao hàng</h3>
+        @foreach (var opt in Model.DeliveryOptions)
+        {
+            <label style="display:block;"><input type="radio" name="DeliveryMethod" value="@opt" @(Model.DeliveryMethod == opt ? "checked" : "") /> @opt</label>
+        }
+        @Html.ValidationMessageFor(m => m.DeliveryMethod)
+
+        <h3>Phương thức thanh toán</h3>
+        @foreach (var opt in Model.PaymentOptions)
+        {
+            <label style="display:block;"><input type="radio" name="PaymentMethod" value="@opt" @(Model.PaymentMethod == opt ? "checked" : "") /> @opt</label>
+        }
+        @Html.ValidationMessageFor(m => m.PaymentMethod)
+
+        <h3>Đơn hàng</h3>
+        <table style="width:100%;border-collapse:collapse;">
+            <thead><tr><th style="text-align:left;">Sản phẩm</th><th>SL</th><th style="text-align:right;">Thành tiền</th></tr></thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td style="text-align:center;">@item.Quantity</td>
+                        <td style="text-align:right;">@item.Subtotal.ToString("N0") VNĐ</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <p style="text-align:right;font-size:18px;">Tổng cộng: <strong>@Model.Total.ToString("N0") VNĐ</strong></p>
+
+        <button type="submit" class="btn">Đặt hàng</button>
+    }
+</div>
+
+@section scripts {
+    <script>
+        document.getElementById('edit-address').addEventListener('click', function () {
+            document.getElementById('defaultAddress').removeAttribute('readonly');
+            document.getElementById('newShippingAddressBox').style.display = 'block';
+            document.getElementById('newShippingAddress').focus();
+        });
+    </script>
+}

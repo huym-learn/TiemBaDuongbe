@@ -1,0 +1,18 @@
+@model TiemBaDuong.Models.ProfileVM
+@{ ViewBag.Title = "Thông tin tài khoản"; }
+<div class="container" style="max-width:560px;margin:auto;padding:20px;">
+    <h2>Thông tin tài khoản</h2>
+    <p>Tên đăng nhập: <strong>@Model.Username</strong></p>
+    @using (Html.BeginForm("UpdateProfile", "Account", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.Username)
+        <div><label>Họ tên</label>@Html.TextBoxFor(m => m.CustomerName)@Html.ValidationMessageFor(m => m.CustomerName)</div>
+        <div><label>Số điện thoại</label>@Html.TextBoxFor(m => m.CustomerPhone)@Html.ValidationMessageFor(m => m.CustomerPhone)</div>
+        <div><label>Email</label>@Html.TextBoxFor(m => m.CustomerEmail)@Html.ValidationMessageFor(m => m.CustomerEmail)</div>
+        <div><label>Địa chỉ</label>@Html.TextAreaFor(m => m.CustomerAddress)@Html.ValidationMessageFor(m => m.CustomerAddress)</div>
+        <button type="submit" class="btn">Cập nhật</button>
+    }
+    <p><a href="@Url.Action("ChangePassword", "Account")">Đổi mật khẩu</a></p>
+</div>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản trị Tiệm Bá Đường</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #222; }
+        .admin-top { background: #1f2937; color: #fff; padding: 12px 20px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+        .admin-top a { color: #fff; text-decoration: none; }
+        .admin-top .muted { color: #9ca3af; }
+        .admin-main { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .card { background: #fff; border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .card .num { font-size: 26px; font-weight: bold; margin-top: 6px; }
+        .alert { padding: 10px 12px; border-radius: 6px; margin-bottom: 12px; }
+        .alert-error { background: #fdecec; border: 1px solid #e5a0a0; }
+        .alert-success { background: #e8f7ec; border: 1px solid #9ad6a8; }
+        .link-button { background: none; border: none; color: #fff; text-decoration: underline; cursor: pointer; padding: 0; }
+    </style>
+</head>
+<body>
+    <div class="admin-top">
+        <strong>Quản trị Tiệm Bá Đường</strong>
+        <a href="@Url.Action("Index", "Dashboard")">Tổng quan</a>
+        <span class="muted">Danh mục, Sản phẩm, Tài khoản Admin, Khách hàng, Đơn hàng: chưa triển khai (bước sau)</span>
+        <span style="margin-left:auto;">@User.Identity.Name</span>
+        @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { style = "display:inline;" }))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="link-button">Đăng xuất</button>
+        }
+    </div>
+    <main class="admin-main">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">@TempData["Error"]</div>
+        }
+        @RenderBody()
+    </main>
+</body>
+</html>

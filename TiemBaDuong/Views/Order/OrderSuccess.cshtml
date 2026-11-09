@@ -1,0 +1,27 @@
+@model TiemBaDuong.Order
+@{ ViewBag.Title = "Đặt hàng thành công"; }
+<div class="container" style="max-width:900px;margin:auto;padding:20px;">
+    <h2>Cảm ơn bạn đã đặt hàng!</h2>
+    <p>Mã đơn: <strong>#@Model.OrderID</strong> — Ngày đặt: @Model.OrderDate.ToString("dd/MM/yyyy")</p>
+    <p>Trạng thái: @TiemBaDuong.Models.Services.OrderStatuses.Label(Model.OrderStatus)</p>
+    <p>Thanh toán: @(Model.PaymentStatus ?? "Chưa cập nhật") — @(Model.PaymentMethod ?? "Chưa cập nhật")</p>
+    <p>Giao hàng: @(Model.DeliveryMethod ?? "Chưa cập nhật")</p>
+    <p>Địa chỉ giao: @Model.AddressDelivery</p>
+
+    <table style="width:100%;border-collapse:collapse;margin-top:16px;">
+        <thead><tr><th style="text-align:left;">Sản phẩm</th><th>SL</th><th style="text-align:right;">Đơn giá</th><th style="text-align:right;">Thành tiền</th></tr></thead>
+        <tbody>
+            @foreach (var d in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@(d.Product != null ? d.Product.ProductName : "Sản phẩm #" + d.ProductID)</td>
+                    <td style="text-align:center;">@d.Quantity</td>
+                    <td style="text-align:right;">@d.UnitPrice.ToString("N0")</td>
+                    <td style="text-align:right;">@((d.UnitPrice * d.Quantity).ToString("N0"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p style="text-align:right;font-size:18px;">Tổng cộng: <strong>@Model.TotalAmount.ToString("N0") VNĐ</strong></p>
+    <p><a href="@Url.Action("MyOrder", "Order")">Xem lịch sử mua hàng</a></p>
+</div>

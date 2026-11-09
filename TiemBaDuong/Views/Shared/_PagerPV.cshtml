@@ -1,0 +1,19 @@
+@model TiemBaDuong.Models.PagerVM
+@if (Model != null && Model.TotalPages > 1)
+{
+    <nav class="pager" style="margin-top:20px;text-align:center;">
+        @for (var i = 1; i <= Model.TotalPages; i++)
+        {
+            var rv = new System.Web.Routing.RouteValueDictionary(Model.Values);
+            rv["page"] = i;
+            if (i == Model.CurrentPage)
+            {
+                <strong class="active" style="margin:0 6px;">@i</strong>
+            }
+            else
+            {
+                <a href="@Url.Action(Model.Action, Model.Controller, rv)" style="margin:0 6px;">@i</a>
+            }
+        }
+    </nav>
+}

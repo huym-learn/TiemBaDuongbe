@@ -1,0 +1,25 @@
+@model TiemBaDuong.Models.PersonalMenuVM
+<a href="@Url.Action("Index", "Cart")" class="cart-link">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-count">@Model.CartCount</span>
+</a>
+<span class="account-menu">
+    @if (Model.IsLoggedIn)
+    {
+        <span class="welcome">Xin chào, @Model.Username</span>
+        <a href="@Url.Action("ProfileInfo", "Account")">Thông tin tài khoản</a>
+        <a href="@Url.Action("MyOrder", "Order")">Lịch sử mua hàng</a>
+        @{
+            using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { style = "display:inline" }))
+            {
+                @Html.AntiForgeryToken()
+                <button type="submit" class="link-button">Đăng xuất</button>
+            }
+        }
+    }
+    else
+    {
+        <a href="@Url.Action("Register", "Account")">Đăng ký</a>
+        <a href="@Url.Action("Login", "Account")">Đăng nhập</a>
+    }
+</span>

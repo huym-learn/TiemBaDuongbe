@@ -1,0 +1,63 @@
+@model TiemBaDuong.Models.HomeProductVM
+@{
+    ViewBag.Title = "Trang chủ";
+}
+
+<!-- Phần Banner -->
+<section class="banner">
+    <div class="banner-content">
+        <h2>Chào mừng đến với Tiệm Nhạc Cụ Bá Đường</h2>
+        <p>Thế giới nhạc cụ đa dạng, Guitar, Piano và phụ kiện cao cấp.</p>
+        <a href="#product-list" class="btn">Bắt đầu mua sắm</a>
+    </div>
+</section>
+
+<div class="container" style="max-width: 1200px; margin: auto; padding: 20px;">
+
+    <!-- Thanh tìm kiếm: GET để URL chia sẻ được -->
+    <section class="search-section">
+        <h2>Tìm kiếm sản phẩm</h2>
+        @using (Html.BeginForm("Index", "Home", FormMethod.Get, new { @class = "search-container" }))
+        {
+            <input type="text" id="search-input" name="searchTerm" value="@Model.SearchTerm" placeholder="Nhập từ khóa (vd: Guitar)..." />
+            <button id="search-button" type="submit">Tìm kiếm</button>
+        }
+        <p><a href="@Url.Action("Search", "Home")">Tìm nâng cao (khoảng giá, sắp xếp)</a></p>
+    </section>
+
+    <!-- Danh mục sản phẩm lấy từ DB -->
+    @Html.Action("Categories", "Home")
+
+    <!-- Sản phẩm nổi bật (bán chạy) -->
+    <section class="featured-products" style="margin-top: 40px;">
+        <h2>Sản phẩm nổi bật</h2>
+        <div class="product-container">
+            @if (Model.Featured.Count == 0)
+            {
+                <p>Chưa có dữ liệu bán hàng để xếp hạng sản phẩm nổi bật.</p>
+            }
+            @foreach (var item in Model.Featured)
+            {
+                @Html.Partial("_ProductItemPV", item, new ViewDataDictionary { { "prefix", "feat" } })
+            }
+        </div>
+    </section>
+
+    <!-- Sản phẩm mới -->
+    <section class="product-list" id="product-list" style="margin-top: 50px;">
+        <h2>Danh sách sản phẩm (Mới nhất)</h2>
+        @if (Model.NewProducts.TotalCount == 0)
+        {
+            <p>Không có sản phẩm phù hợp.</p>
+        }
+        <ul class="list-container">
+            @foreach (var item in Model.NewProducts.Items)
+            {
+                <li class="list-item">
+                    @Html.Partial("_ProductItemPV", item, new ViewDataDictionary { { "prefix", "new" } })
+                </li>
+            }
+        </ul>
+        @Html.Partial("_PagerPV", Model.NewPager)
+    </section>
+</div>

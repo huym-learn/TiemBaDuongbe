@@ -1,0 +1,15 @@
+@model TiemBaDuong.Models.LoginVM
+@{ ViewBag.Title = "Đăng nhập"; }
+<div class="container" style="max-width:420px;margin:auto;padding:20px;">
+    <h2>Đăng nhập</h2>
+    @using (Html.BeginForm("Login", "Account", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div><label>Tên đăng nhập</label>@Html.TextBoxFor(m => m.Username)@Html.ValidationMessageFor(m => m.Username)</div>
+        <div><label>Mật khẩu</label>@Html.PasswordFor(m => m.Password)@Html.ValidationMessageFor(m => m.Password)</div>
+        <div><label>@Html.CheckBoxFor(m => m.RememberMe) Ghi nhớ đăng nhập</label></div>
+        <button type="submit" class="btn">Đăng nhập</button>
+    }
+    <p>Chưa có tài khoản? <a href="@Url.Action("Register", "Account")">Đăng ký</a></p>
+</div>

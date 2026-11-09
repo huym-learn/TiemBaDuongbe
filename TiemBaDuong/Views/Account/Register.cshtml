@@ -1,0 +1,19 @@
+@model TiemBaDuong.Models.RegisterVM
+@{ ViewBag.Title = "Đăng ký"; }
+<div class="container" style="max-width:560px;margin:auto;padding:20px;">
+    <h2>Đăng ký tài khoản</h2>
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div><label>Tên đăng nhập</label>@Html.TextBoxFor(m => m.Username)@Html.ValidationMessageFor(m => m.Username)</div>
+        <div><label>Mật khẩu</label>@Html.PasswordFor(m => m.Password)@Html.ValidationMessageFor(m => m.Password)</div>
+        <div><label>Xác nhận mật khẩu</label>@Html.PasswordFor(m => m.ConfirmPassword)@Html.ValidationMessageFor(m => m.ConfirmPassword)</div>
+        <div><label>Họ tên</label>@Html.TextBoxFor(m => m.CustomerName)@Html.ValidationMessageFor(m => m.CustomerName)</div>
+        <div><label>Số điện thoại</label>@Html.TextBoxFor(m => m.CustomerPhone)@Html.ValidationMessageFor(m => m.CustomerPhone)</div>
+        <div><label>Email</label>@Html.TextBoxFor(m => m.CustomerEmail)@Html.ValidationMessageFor(m => m.CustomerEmail)</div>
+        <div><label>Địa chỉ</label>@Html.TextAreaFor(m => m.CustomerAddress)@Html.ValidationMessageFor(m => m.CustomerAddress)</div>
+        <button type="submit" class="btn">Đăng ký</button>
+    }
+    <p>Đã có tài khoản? <a href="@Url.Action("Login", "Account")">Đăng nhập</a></p>
+</div>

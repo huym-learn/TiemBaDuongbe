@@ -1,0 +1,20 @@
+@model TiemBaDuong.Models.ProductListVM
+@{
+    ViewBag.Title = Model.CategoryName;
+}
+<div class="container" style="max-width: 1200px; margin: auto; padding: 20px;">
+    <h2>@Model.CategoryName</h2>
+    @Html.Action("Categories", "Home")
+
+    @if (Model.Products.TotalCount == 0)
+    {
+        <p>Danh mục này chưa có sản phẩm.</p>
+    }
+    <div class="product-container" style="margin-top:20px;">
+        @foreach (var item in Model.Products.Items)
+        {
+            @Html.Partial("_ProductItemPV", item, new ViewDataDictionary { { "prefix", "cat" } })
+        }
+    </div>
+    @Html.Partial("_PagerPV", Model.Pager)
+</div>

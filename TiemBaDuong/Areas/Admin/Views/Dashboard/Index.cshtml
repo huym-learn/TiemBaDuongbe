@@ -1,0 +1,10 @@
+@model TiemBaDuong.Models.DashboardVM
+@{ ViewBag.Title = "Tổng quan"; }
+<h2>Tổng quan</h2>
+<div class="card-grid">
+    <div class="card">Sản phẩm<div class="num">@Model.ProductCount</div></div>
+    <div class="card">Danh mục<div class="num">@Model.CategoryCount</div></div>
+    <div class="card">Khách hàng<div class="num">@Model.CustomerCount</div></div>
+    <div class="card">Đơn hàng<div class="num">@Model.OrderCount</div></div>
+    <div class="card">Doanh thu (không tính đơn hủy)<div class="num">@Model.Revenue.ToString("N0") VNĐ</div></div>
+</div>

@@ -1,0 +1,51 @@
+@using System.Linq
+@model TiemBaDuong.Models.OrderHistoryVM
+@{ ViewBag.Title = "Đơn hàng của tôi"; }
+<div class="container" style="max-width:1000px;margin:auto;padding:20px;">
+    <h2>Đơn hàng của tôi</h2>
+
+    <nav style="display:flex;gap:12px;flex-wrap:wrap;margin:12px 0;">
+        <a href="@Url.Action("MyOrder", "Order", new { q = Model.Q })" class="@(string.IsNullOrEmpty(Model.Status) ? "active" : "")">Tất cả</a>
+        @foreach (var tab in TiemBaDuong.Models.Services.OrderStatuses.Tabs)
+        {
+            <a href="@Url.Action("MyOrder", "Order", new { status = tab.Key, q = Model.Q })" class="@(Model.Status == tab.Key ? "active" : "")">@tab.Value</a>
+        }
+    </nav>
+
+    @using (Html.BeginForm("MyOrder", "Order", FormMethod.Get))
+    {
+        <input type="hidden" name="status" value="@Model.Status" />
+        <input type="text" name="q" value="@Model.Q" placeholder="Mã đơn hoặc tên sản phẩm" />
+        <button type="submit">Tìm</button>
+    }
+
+    @if (Model.Orders.TotalCount == 0)
+    {
+        <p style="margin-top:16px;">Không có đơn hàng nào.</p>
+    }
+
+    @foreach (var order in Model.Orders.Items)
+    {
+        <div style="border:1px solid #ddd;border-radius:6px;padding:12px;margin-top:12px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <strong>Đơn #@order.OrderID</strong>
+                <span>@order.OrderDate.ToString("dd/MM/yyyy")</span>
+                <span>@TiemBaDuong.Models.Services.OrderStatuses.Label(order.OrderStatus)</span>
+                <span>@order.TotalAmount.ToString("N0") VNĐ</span>
+            </div>
+            <p style="color:#555;">
+                @string.Join(", ", order.OrderDetails.Select(d => (d.Product != null ? d.Product.ProductName : "SP #" + d.ProductID) + " x" + d.Quantity))
+            </p>
+            <div style="display:flex;gap:12px;">
+                <a href="@Url.Action("OrderSuccess", "Order", new { id = order.OrderID })">Xem chi tiết</a>
+                @using (Html.BeginForm("BuyAgain", "Order", new { id = order.OrderID }, FormMethod.Post, new { style = "display:inline;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="link-button">Mua lại</button>
+                }
+            </div>
+        </div>
+    }
+
+    @Html.Partial("_PagerPV", Model.Pager)
+</div>

@@ -1,0 +1,9 @@
+@model System.Collections.Generic.IList<TiemBaDuong.Category>
+<nav class="main-menu" style="margin-top: 30px;">
+    <ul>
+        @foreach (var c in Model)
+        {
+            <li><a href="@Url.Action("ProductList", "Home", new { categoryId = c.CategoryID })">@c.CategoryName</a></li>
+        }
+    </ul>
+</nav>
